@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>AI Resume Analyzer</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-cover bg-no-repeat bg-center select-none"
+style="background-image: url('/images/aibackhome.jpg');">
+
+<div class="flex flex-col items-center justify-center min-h-screen">
+
+    <div class="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-2xl">
+
+        <h1 class="text-4xl font-bold text-center text-blue-600 mb-4">
+            AI Resume Analyzer
+        </h1>
+
+        <p class="text-center text-gray-600 mb-8">
+            Upload your resume and get AI-powered analysis instantly.
+        </p>
+
+        <form
+                class="space-y-6"
+                method="post"
+                enctype="multipart/form-data"
+                action="/airesumeanalyzer/upload"
+        >
+
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2">
+                    Upload Resume
+                </label>
+
+                <input
+                        type="file"
+                        name="resume"
+                        class="w-full border border-gray-300 rounded-lg p-3"
+                >
+            </div>
+
+            <button
+                    type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-300"
+            >
+                Analyze Resume
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
