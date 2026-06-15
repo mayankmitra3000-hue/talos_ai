@@ -3,105 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>Welcome</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body class="min-h-screen select-none bg-white">
 
-<div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+<!-- Main Seperation Container -->
+<div class="flex min-h-screen">
 
-    <!-- Heading -->
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">
-            Welcome Back
-        </h1>
-        <p class="text-gray-500 mt-2">
-            Sign in to your account
-        </p>
+    <div class="w-3/5 flex item-center justify-center">
+        <img src="/images/signinbgt.jpg"
+             alt="signinimage"
+             class=" w-full h-full object-cover">
     </div>
 
-    <!-- Success Message -->
-    <div th:if="${valid}"
-         class="bg-green-100 text-green-700 px-4 py-3 rounded-lg mb-4">
-        <p th:text="${valid}"></p>
-    </div>
+    <div class="w-2/5 items-center justify-center bg-gray-50">
 
-    <!-- Error Message -->
-    <div th:if="${invalid}"
-         class="bg-red-100 text-red-700 px-4 py-3 rounded-lg mb-4">
-        <p th:text="${invalid}"></p>
-    </div>
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">
+                Welcome Back
+            </h1>
+            <p class="text-gray-500 mt-2">
+                Sign in to your account
+            </p>
+        </div>
 
-    <!-- Signin Form -->
-    <form th:action="@{/airesumeanalyzer/signin}" method="post" class="space-y-5">
+        <!-- Success Message -->
+        <div th:if="${valid}"
+             class="bg-green-100 text-green-700 px-4 py-3 rounded-lg mb-4">
+            <p th:text="${valid}"></p>
+        </div>
 
-        <!-- Username -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-                Username
-            </label>
+        <!-- Error Message -->
+        <div th:if="${invalid}"
+             class="bg-red-100 text-red-700 px-4 py-3 rounded-lg mb-4">
+            <p th:text="${invalid}"></p>
+        </div>
 
-            <input type="text"
-                   name="username"
-                   placeholder="Enter username"
-                   required
-                   class="w-full px-4 py-3 border border-gray-300 rounded-xl
+        <!-- Signin Form -->
+        <form th:action="@{/airesumeanalyzer/signin}" method="post" class="space-y-5">
+
+            <!-- Username -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Username
+                </label>
+
+                <input type="text"
+                       name="username"
+                       placeholder="Enter username"
+                       required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl
                           focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
+            </div>
 
-        <!-- Password -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-                Password
-            </label>
+            <!-- Password -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Password
+                </label>
 
-            <input type="password"
-                   name="password"
-                   placeholder="Enter password"
-                   required
-                   class="w-full px-4 py-3 border border-gray-300 rounded-xl
+                <input type="password"
+                       name="password"
+                       placeholder="Enter password"
+                       required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl
                           focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
+            </div>
 
-        <!-- Remember Me + Forgot -->
-        <div class="flex items-center justify-between text-sm">
+            <!-- Remember Me + Forgot -->
+            <div class="flex items-center justify-between text-sm">
 
-            <label class="flex items-center gap-2 text-gray-600">
-                <input type="checkbox" class="rounded">
-                Remember me
-            </label>
+                <label class="flex items-center gap-2 text-gray-600">
+                    <input type="checkbox" class="rounded">
+                    Remember me
+                </label>
 
-            <a href="#"
-               class="text-blue-600 hover:underline">
-                Forgot Password?
-            </a>
-        </div>
+                <a href="#"
+                   class="text-blue-600 hover:underline">
+                    Forgot Password?
+                </a>
+            </div>
 
-        <!-- Submit Button -->
-        <button type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700
+            <!-- Submit Button -->
+            <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700
                        text-white font-semibold py-3 rounded-xl
                        transition duration-300">
 
-            Sign In
-        </button>
-    </form>
+                Sign In
+            </button>
+        </form>
 
-    <!-- Signup Link -->
-    <div class="mt-6 text-center text-sm text-gray-600">
+        <!-- Signup Link -->
+        <div class="mt-6 text-center text-sm text-gray-600">
 
-        Don't have an account?
+            Don't have an account?
 
-        <a th:href="@{/signup}"
-           class="text-blue-600 hover:underline font-medium">
+            <a th:href="@{/signup}"
+               class="text-blue-600 hover:underline font-medium">
 
-            Create Account
-        </a>
+                Create Account
+            </a>
+        </div>
+
     </div>
-
 </div>
 
 </body>
