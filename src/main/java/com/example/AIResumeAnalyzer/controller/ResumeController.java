@@ -1,7 +1,7 @@
 package com.example.AIResumeAnalyzer.controller;
 
 import com.example.AIResumeAnalyzer.service.AuthService;
-import com.example.AIResumeAnalyzer.service.GeminiService;
+import com.example.AIResumeAnalyzer.service.GroqService;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.IOException;
 
@@ -22,7 +23,7 @@ import java.io.IOException;
 public class ResumeController {
 
     private final AuthService authService;
-    private final GeminiService geminiService;
+    private final GroqService groqService;
 
     @GetMapping
     public String firstPage(){
@@ -39,12 +40,11 @@ public class ResumeController {
 
             document.close();
 
-            String analysis = geminiService.analyzeResume(resumeText);
+            String analysis = groqService.analyzeResume(resumeText);
 
             model.addAttribute("analysis",analysis);
             System.out.println(resumeText);
         }
-
         catch (IOException e){
             e.printStackTrace();
             model.addAttribute("error","Failed to read PDF File");

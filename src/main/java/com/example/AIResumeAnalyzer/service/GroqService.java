@@ -1,5 +1,5 @@
 package com.example.AIResumeAnalyzer.service;
 
-public interface GeminiService {
+public interface GroqService {
     String analyzeResume(String resumeText);
 }
