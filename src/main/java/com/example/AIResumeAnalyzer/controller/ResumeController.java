@@ -1,5 +1,6 @@
 package com.example.AIResumeAnalyzer.controller;
 
+import com.example.AIResumeAnalyzer.entity.User;
 import com.example.AIResumeAnalyzer.service.AuthService;
 import com.example.AIResumeAnalyzer.service.GroqService;
 import org.springframework.ui.Model;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.IOException;
 
@@ -52,9 +52,37 @@ public class ResumeController {
         return "results";
     }
 
-    @GetMapping ("/signin")
-    public String signin() {
-        return "signin";
+    @PostMapping("/signup")
+    public String signupLogic
+            (@RequestParam String username,
+             @RequestParam String fullname,
+             @RequestParam String password,
+             @RequestParam Long contact,
+             @RequestParam String email,
+             Model model){
+
+        User user = new User();
+        user.setUsername(username);
+        user.setFullName(fullname);
+        user.setPassword(password);
+        user.setContact(contact);
+        user.setEmail(email);
+
+        String status = authService.userSignup(user);
+
+        if (status.equals("created")) {
+            model.addAttribute(
+                    "success",
+                    "Account created successfully. Please sign in."
+            );
+            return "firstpage";
+        }
+
+        model.addAttribute(
+                "error",
+                "Username already exists."
+        );
+        return "firstpage";
     }
 
     @PostMapping("/signin")
@@ -67,7 +95,7 @@ public class ResumeController {
             }
 
             model.addAttribute("invalid","Invalid username/password");
-            return "signin";
+            return "firstpage";
     }
 
 }

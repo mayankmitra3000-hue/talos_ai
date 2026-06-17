@@ -36,4 +36,16 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+    @Override
+    public String userSignup(User user){
+        User existingUser = userRepository.findByUsername(user.getUsername());
+
+        if (existingUser!=null){
+            return "exists";
+        }
+
+        userRepository.save(user);
+        return "created";
+    }
+
 }
