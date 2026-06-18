@@ -8,7 +8,7 @@
 </head>
 
 <body class="min-h-screen bg-cover bg-no-repeat bg-center select-none"
-style="background-image: url('/images/aibackhome.jpg');">
+style="background-image: url('/images/homebgt.jpg');">
 
 <div class="flex flex-col items-center justify-center min-h-screen">
 
@@ -48,7 +48,18 @@ style="background-image: url('/images/aibackhome.jpg');">
                 Analyze Resume
             </button>
 
+
         </form>
+
+        <a href="/airesumeanalyzer/logout"
+           class="block w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-4 mt-5 mb-5 rounded-xl shadow-lg text-center">
+            Logout
+        </a>
+
+        <div th:if="${error}"
+        class="bg-red-100 text-green-700 px-4 py-3 rounded-lg mb-4">
+        <p th:text="${error}"></p>
+        </div>
 
     </div>
 

@@ -3,8 +3,10 @@ package com.example.AIResumeAnalyzer.controller;
 import com.example.AIResumeAnalyzer.entity.User;
 import com.example.AIResumeAnalyzer.service.AuthService;
 import com.example.AIResumeAnalyzer.service.GroqService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -24,6 +26,7 @@ public class ResumeController {
 
     private final AuthService authService;
     private final GroqService groqService;
+    private final HttpSession session;
 
     @GetMapping
     public String firstPage(){
@@ -32,7 +35,18 @@ public class ResumeController {
 
     @PostMapping("/upload")
     public String uploadResume(@RequestParam("resume")MultipartFile file, Model model){
+
+        if(session.getAttribute("loggedInUser")==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
         try{
+
+            if (file.isEmpty()) {
+                model.addAttribute("error", "Please select a PDF file.");
+                return "home";
+            }
+
             PDDocument document = Loader.loadPDF(file.getBytes());
 
             PDFTextStripper textStripper = new PDFTextStripper();
@@ -86,16 +100,32 @@ public class ResumeController {
     }
 
     @PostMapping("/signin")
-    public String signinLogic(@RequestParam String username, @RequestParam String password, Model model){
+    public String signinLogic(@RequestParam String username, @RequestParam String password, HttpSession session, Model model){
 
             String status = authService.userSignin(username,password);
             if (status.equals("valid")) {
+                session.setAttribute("loggedInUser",username);
                 model.addAttribute("valid", "Login successful...");
-                return "home";
+                return "redirect:/airesumeanalyzer/home";
             }
 
             model.addAttribute("invalid","Invalid username/password");
             return "firstpage";
     }
 
+    @GetMapping("/home")
+    public String home(HttpSession session, HttpServletResponse response) {
+
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/airesumeanalyzer";
+        }
+
+        return "home";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "redirect:/airesumeanalyzer";
+    }
 }
