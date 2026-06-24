@@ -114,12 +114,14 @@ public class ResumeController {
     }
 
     @GetMapping("/home")
-    public String home(HttpSession session, HttpServletResponse response) {
+    public String home(HttpSession session, HttpServletResponse response,Model model) {
 
-        if (session.getAttribute("loggedInUser") == null) {
+        String username = (String) session.getAttribute("loggedInUser");
+
+        if (username== null) {
             return "redirect:/airesumeanalyzer";
         }
-
+        model.addAttribute("username",username);
         return "home";
     }
 

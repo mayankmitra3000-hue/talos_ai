@@ -3,6 +3,9 @@
 <head>
     <title>AI Resume Analyzer</title>
 
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -11,59 +14,72 @@
                         fadeIn: {
                             '0%': {opacity: '0'},
                             '100%': {opacity: '1'},
+                        },
+                        slideDown: {
+                            '0%': {
+                                transform: 'translateY(-100%)',
+                                opacity: '0'
+                            },
+                            '100%': {
+                                transform: 'translateY(0)',
+                                opacity: '1'
+                            }
                         }
                     },
                     animation: {
-                        fadeIn: 'fadeIn 2s ease-out forwards'
+                        fadeIn: 'fadeIn 2s ease-out forwards',
+                        slideDown: 'slideDown 0.8s ease-out forwards'
                     }
                 }
             }
         }
     </script>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="min-h-screen bg-cover bg-no-repeat bg-center select-none animate-fadeIn"
 style="background-image: url('/images/upperbgt.jpg');">
 
-<nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50">
+<nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 animate-slideDown">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
         <!-- Logo -->
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-cyan-600 rounded-xl flex items-center justify-center">
-                <span class="text-white font-bold text-lg">AI</span>
-            </div>
             <div>
-                <h1 class="text-xl font-bold text-gray-800">
-                    Resume Analyzer
+                <h1 class="text-xl font-bold ml-[1px] text-violet-800">
+                    AIRes Pro
                 </h1>
-                <p class="text-xs text-gray-500">
-                    Smart Career Insights
+                <p class="text-xs text-black-500">
+                    Resume Analyzer
                 </p>
             </div>
         </div>
 
         <!-- Navigation Links -->
         <div class="hidden md:flex items-center gap-8">
-            <a href="/" class="text-gray-600 hover:text-cyan-600 font-medium transition">
+            <a href="/" class="text-gray-600 hover:text-violet-600 font-medium transition">
                 Home
             </a>
-            <a href="/upload" class="text-gray-600 hover:text-cyan-600 font-medium transition">
+            <a href="/upload" class="text-gray-600 hover:text-violet-600 font-medium transition">
                 My Resumes
             </a>
-            <a href="/analyze" class="text-gray-600 hover:text-cyan-600 font-medium transition">
+            <a href="/analyze" class="text-gray-600 hover:text-violet-600 font-medium transition">
+                My Profile
+            </a>
+            <a href="/analyze" class="text-gray-600 hover:text-violet-600 font-medium transition">
                 About Us
+            </a>
+            <a href="/analyze" class="text-gray-600 hover:text-violet-600 font-medium transition">
+                Logout
             </a>
         </div>
 
         <!-- Right Side -->
-        <div class="flex items-center gap-4">
-            <button class="px-5 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 hover:scale-105">
-                Logout
-            </button>
+        <div class="flex items-center gap-4 pt-100 text-center">
+                <h1 class="text-xl font-bold text-black">
+                    Welcome,
+                    <span class="text-violet-600" th:text="${username}"></span>
+                </h1>
         </div>
 
     </div>
@@ -71,62 +87,3 @@ style="background-image: url('/images/upperbgt.jpg');">
 
 </body>
 </html>
-
-
-
-
-
-<!--<div class="flex flex-col items-center justify-center min-h-screen">
-
-    <div class="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-2xl">
-
-        <h1 class="text-4xl font-bold text-center text-blue-600 mb-4">
-            AI Resume Analyzer
-        </h1>
-
-        <p class="text-center text-gray-600 mb-8">
-            Upload your resume and get AI-powered analysis instantly.
-        </p>
-
-        <form
-                class="space-y-6"
-                method="post"
-                enctype="multipart/form-data"
-                action="/airesumeanalyzer/upload"
-        >
-
-            <div>
-                <label class="block text-gray-700 font-semibold mb-2">
-                    Upload Resume
-                </label>
-
-                <input
-                        type="file"
-                        name="resume"
-                        class="w-full border border-gray-300 rounded-lg p-3"
-                >
-            </div>
-
-            <button
-                    type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-300"
-            >
-                Analyze Resume
-            </button>
-
-
-        </form>
-
-        <a href="/airesumeanalyzer/logout"
-           class="block w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-4 mt-5 mb-5 rounded-xl shadow-lg text-center">
-            Logout
-        </a>
-
-        <div th:if="${error}"
-        class="bg-red-100 text-green-700 px-4 py-3 rounded-lg mb-4">
-        <p th:text="${error}"></p>
-        </div>
-
-    </div>
-
-</div> -->
