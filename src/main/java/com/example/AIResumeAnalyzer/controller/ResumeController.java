@@ -1,6 +1,8 @@
 package com.example.AIResumeAnalyzer.controller;
 
 import com.example.AIResumeAnalyzer.entity.User;
+import com.example.AIResumeAnalyzer.entity.Resume;
+import com.example.AIResumeAnalyzer.repository.ResumeRepository;
 import com.example.AIResumeAnalyzer.service.AuthService;
 import com.example.AIResumeAnalyzer.service.GroqService;
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +26,7 @@ import java.io.IOException;
 @RequestMapping("/airesumeanalyzer")
 public class ResumeController {
 
+    private final ResumeRepository resumeRepository;
     private final AuthService authService;
     private final GroqService groqService;
     private final HttpSession session;
