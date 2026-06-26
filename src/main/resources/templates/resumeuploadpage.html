@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Upload Resume | AI Resume Analyzer</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    keyframes: {
+                        fadeIn: {
+                            '0%': {opacity: '0'},
+                            '100%': {opacity: '1'}
+                        },
+                        slideDown: {
+                            '0%': {
+                                transform: 'translateY(-100%)',
+                                opacity: '0'
+                            },
+                            '100%': {
+                                transform: 'translateY(0)',
+                                opacity: '1'
+                            }
+                        }
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 1.5s ease-out forwards',
+                        slideDown: 'slideDown .8s ease-out forwards'
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body class="min-h-screen bg-cover bg-center bg-no-repeat animate-fadeIn"
+      style="background-image:url('/images/upperbgt.jpg');">
+
+<!-- Navbar -->
+<nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 animate-slideDown">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+        <div>
+            <h1 class="text-xl font-bold text-violet-800">
+                AIRes Pro
+            </h1>
+            <p class="text-xs text-gray-500">
+                Resume Analyzer
+            </p>
+        </div>
+
+        <div class="hidden md:flex gap-8">
+
+            <a th:href="@{/airesumeanalyzer/home}"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                Home
+            </a>
+
+            <a th:href="@{/airesumeanalyzer/resumeuploadpage}"
+               class="text-violet-600 font-semibold">
+                Upload Resume
+            </a>
+
+            <a href="#"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                My Resumes
+            </a>
+
+            <a href="#"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                My Profile
+            </a>
+
+            <a href="#"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                About Us
+            </a>
+
+            <a th:href="@{/airesumeanalyzer/logout}"
+               class="text-red-500 hover:text-red-700 font-medium">
+                Logout
+            </a>
+
+        </div>
+
+        <div>
+            <span class="font-semibold">
+                Welcome,
+                <span class="text-violet-700"
+                      th:text="${username}">
+                </span>
+            </span>
+        </div>
+
+    </div>
+</nav>
+
+<!-- Upload Card -->
+<div class="flex justify-center items-center min-h-screen pt-24">
+
+    <div class="bg-white/90 backdrop-blur-lg shadow-2xl rounded-3xl p-10 w-full max-w-xl">
+
+        <h2 class="text-3xl font-bold text-center text-violet-700">
+            Upload Your Resume
+        </h2>
+
+        <p class="text-center text-gray-600 mt-2 mb-8">
+            Upload your resume in PDF format securely.
+        </p>
+
+        <!-- Success Message -->
+        <div th:if="${uploaded}"
+             class="mb-4 p-3 rounded-lg bg-green-100 text-green-700 text-center font-medium">
+
+            <span th:text="${uploaded}"></span>
+
+        </div>
+
+        <!-- Error Message -->
+        <div th:if="${error}"
+             class="mb-4 p-3 rounded-lg bg-red-100 text-red-700 text-center font-medium">
+
+            <span th:text="${error}"></span>
+
+        </div>
+
+        <form th:action="@{/airesumeanalyzer/uploadresume}"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div class="mb-6">
+
+                <label class="block text-gray-700 font-semibold mb-2">
+                    Select Resume (PDF)
+                </label>
+
+                <input type="file"
+                       name="resume"
+                       accept=".pdf"
+                       required
+                       class="w-full border rounded-lg p-3
+                              file:bg-violet-600
+                              file:text-white
+                              file:border-0
+                              file:px-4
+                              file:py-2
+                              file:rounded-lg
+                              file:cursor-pointer
+                              hover:file:bg-violet-700">
+
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-lg font-semibold transition">
+
+                Upload Resume
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

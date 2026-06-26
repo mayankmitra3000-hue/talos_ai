@@ -5,6 +5,7 @@ import com.example.AIResumeAnalyzer.entity.Resume;
 import com.example.AIResumeAnalyzer.repository.ResumeRepository;
 import com.example.AIResumeAnalyzer.service.AuthService;
 import com.example.AIResumeAnalyzer.service.GroqService;
+import com.example.AIResumeAnalyzer.service.ResumeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -26,18 +27,18 @@ import java.io.IOException;
 @RequestMapping("/airesumeanalyzer")
 public class ResumeController {
 
-    private final ResumeRepository resumeRepository;
+    private final ResumeService resumeService;
     private final AuthService authService;
     private final GroqService groqService;
-    private final HttpSession session;
+//    private final HttpSession session; -----> Field injection not required when method parameter injection is available
 
     @GetMapping
     public String firstPage(){
         return "firstpage";
     }
 
-    @PostMapping("/upload")
-    public String uploadResume(@RequestParam("resume")MultipartFile file, Model model){
+    @PostMapping("/analyzeresume")
+    public String analyzeResume(@RequestParam("resume")MultipartFile file, HttpSession session, Model model){
 
         if(session.getAttribute("loggedInUser")==null){
             return "redirect:/airesumeanalyzer";
@@ -126,6 +127,58 @@ public class ResumeController {
         }
         model.addAttribute("username",username);
         return "home";
+    }
+
+    @GetMapping("/uploadresume")
+    public String resumeUploadPage(HttpSession session, Model model) {
+
+        String username = (String) session.getAttribute("loggedInUser");
+
+        if (username == null) {
+            return "redirect:/airesumeanalyzer";
+        }
+
+        model.addAttribute("username", username);
+
+        return "resumeuploadpage";
+    }
+
+    @PostMapping("/uploadresume")
+    public String uploadResume(@RequestParam("resume") MultipartFile file,
+                               HttpSession session,Model model){
+        String username = (String) session.getAttribute("loggedInUser");
+
+        if(username==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
+        try{
+            if(file.isEmpty()){
+                model.addAttribute("error","Please select a pdf file...");
+                return "resumeuploadpage";
+            }
+
+            if (!"application/pdf".equals(file.getContentType()) || !file.getOriginalFilename().toLowerCase().endsWith(".pdf")){
+                model.addAttribute("error", "Only PDF files are allowed.");
+                return "resumeuploadpage";
+            }
+
+            PDDocument document = Loader.loadPDF(file.getBytes());
+            PDFTextStripper stripper = new PDFTextStripper();
+            String resumeText = stripper.getText(document);
+            document.close();
+
+            resumeService.saveResume(username,file,resumeText);
+
+            model.addAttribute("uploaded","Resume uploaded successfully...");
+            return "resumeuploadpage";
+        }
+
+        catch(IOException e){
+            e.printStackTrace();
+            model.addAttribute("error","Failed to upload the resume...");
+            return "resumeuploadpage";
+        }
     }
 
     @GetMapping("/logout")
