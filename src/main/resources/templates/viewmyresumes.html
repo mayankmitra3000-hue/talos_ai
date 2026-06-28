@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Resumes | AIRes Pro</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    keyframes: {
+                        fadeIn: {
+                            '0%': {opacity: '0'},
+                            '100%': {opacity: '1'}
+                        },
+                        slideDown: {
+                            '0%': {
+                                transform: 'translateY(-100%)',
+                                opacity: '0'
+                            },
+                            '100%': {
+                                transform: 'translateY(0)',
+                                opacity: '1'
+                            }
+                        }
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 1s ease-out forwards',
+                        slideDown: 'slideDown 0.8s ease-out forwards'
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body class="min-h-screen bg-cover bg-center bg-no-repeat animate-fadeIn"
+      style="background-image:url('/images/upperbgt.jpg');">
+
+<!-- Navbar -->
+<nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 animate-slideDown">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+        <div>
+            <h1 class="text-xl font-bold text-violet-800">
+                AIRes Pro
+            </h1>
+            <p class="text-xs text-gray-600">
+                Resume Analyzer
+            </p>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8">
+
+            <a href="/"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                Home
+            </a>
+
+            <a href="/airesumeanalyzer/uploadresume"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                Upload Resume
+            </a>
+
+            <a href="/airesumeanalyzer/viewmyresumes"
+               class="text-violet-600 font-semibold">
+                My Resumes
+            </a>
+
+            <a href="/profile"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                My Profile
+            </a>
+
+            <a href="/about"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                About Us
+            </a>
+
+            <a href="/airesumeanalyzer/logout"
+               class="text-red-500 hover:text-red-700 font-medium">
+                Logout
+            </a>
+
+        </div>
+
+        <div>
+            <p th:if="${nouploads}"
+               th:text="${nouploads}"
+               class="text-black-600 text-center mt-3 mb-2">
+            </p>
+        </div>
+
+    </div>
+</nav>
+
+<!-- Content -->
+
+<div class="max-w-6xl mx-auto pt-32 px-6 pb-10">
+
+    <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8">
+
+        <div class="flex justify-between items-center mb-8">
+
+            <div>
+                <h2 class="text-3xl font-bold text-violet-800">
+                    My Uploaded Resumes
+                </h2>
+
+                <p class="text-gray-600 mt-2">
+                    Manage and analyze all your uploaded resumes.
+                </p>
+            </div>
+
+            <a href="/airesumeanalyzer/uploadresume"
+               class="bg-violet-600 hover:bg-violet-700 text-white px-5 py-3 rounded-xl font-semibold transition">
+                + Upload Resume
+            </a>
+
+        </div>
+
+        <!-- Empty State -->
+
+        <div th:if="${nouploads}"
+             class="text-center py-20">
+
+            <h3 th:text="${nouploads}"
+                class="text-2xl font-semibold text-gray-700">
+            </h3>
+
+            <p class="text-gray-500 mt-3">
+                Upload your first resume to start analyzing.
+            </p>
+
+            <a href="/airesumeanalyzer/uploadresume"
+               class="inline-block mt-6 bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-xl">
+                Upload Resume
+            </a>
+
+        </div>
+
+        <!-- Resume Table -->
+
+        <div th:unless="${#lists.isEmpty(resumes)}"
+             class="overflow-x-auto">
+
+            <table class="w-full border-collapse">
+
+                <thead>
+
+                <tr class="bg-violet-100 text-violet-800">
+
+                    <th class="p-4 text-left">Resume ID</th>
+
+                    <th class="p-4 text-left">File Name</th>
+
+                    <th class="p-4 text-left">Uploaded On</th>
+
+                    <th class="p-4 text-center">Actions</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr th:each="resume : ${resumes}"
+                    class="border-b hover:bg-violet-50 transition">
+
+                    <td class="p-4 font-medium"
+                        th:text="${resume.resumeId}">
+                    </td>
+
+                    <td class="p-4"
+                        th:text="${resume.fileName}">
+                    </td>
+
+                    <td class="p-4"
+                        th:text="${#temporals.format(resume.uploadedAt,'dd MMM yyyy HH:mm')}">
+                    </td>
+
+                    <td class="p-4">
+
+                        <div class="flex justify-center gap-3">
+
+                            <a th:href="@{/resume/view/{id}(id=${resume.resumeId})}"
+                               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                                View
+                            </a>
+
+                            <a th:href="@{/resume/analyze/{id}(id=${resume.resumeId})}"
+                               class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
+                                Analyze
+                            </a>
+
+                            <a th:href="@{/resume/delete/{id}(id=${resume.resumeId})}"
+                               onclick="return confirm('Delete this resume?');"
+                               class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -48,4 +48,9 @@ public class AuthServiceImpl implements AuthService {
         return "created";
     }
 
+    @Override
+    public User findUserbyUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 }

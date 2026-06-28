@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,11 @@ public class ResumeServiceImpl implements ResumeService {
         resume.setUser(user);
 
         resumeRepository.save(resume);
+    }
+
+    @Override
+    public List<Resume> findByUser(User user) {
+        return resumeRepository.findByUser(user);
     }
 
 

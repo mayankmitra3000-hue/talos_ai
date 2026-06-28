@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -179,6 +180,27 @@ public class ResumeController {
             model.addAttribute("error","Failed to upload the resume...");
             return "resumeuploadpage";
         }
+    }
+
+    @GetMapping("/myresumes")
+    public String myResumes(HttpSession session, Model model){
+        String username = (String)session.getAttribute("loggedInUser");
+
+        if(username==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
+        User user = authService.findUserbyUsername(username);
+        List<Resume> resumes = resumeService.findByUser(user);
+
+        if(resumes.isEmpty()){
+            model.addAttribute("nouploads","No Resume Uploaded Yet");
+        }
+
+        model.addAttribute("username",username);
+        model.addAttribute("resumes",resumes);
+
+        return "viewmyresumes";
     }
 
     @GetMapping("/logout")
