@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,13 +28,19 @@ public class ResumeServiceImpl implements ResumeService {
             throw new IllegalArgumentException("User not found !");
         }
 
-        Resume resume = new Resume();
-        resume.setFileName(file.getOriginalFilename());
-        resume.setUploadedAt(LocalDateTime.now());
-        resume.setResumeText(resumeText);
-        resume.setUser(user);
+        try {
+            Resume resume = new Resume();
+            resume.setFileName(file.getOriginalFilename());
+            resume.setResumeFile(file.getBytes());
+            resume.setUploadedAt(LocalDateTime.now());
+            resume.setResumeText(resumeText);
+            resume.setUser(user);
 
-        resumeRepository.save(resume);
+            resumeRepository.save(resume);
+        }
+        catch (IOException e){
+            throw new RuntimeException("Failed to read uploaded file",e);
+        }
     }
 
     @Override

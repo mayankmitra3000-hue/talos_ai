@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>About Us | AIRes Pro</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    keyframes: {
+                        fadeIn: {
+                            '0%': {opacity: '0'},
+                            '100%': {opacity: '1'}
+                        },
+                        slideDown: {
+                            '0%': {
+                                transform: 'translateY(-100%)',
+                                opacity: '0'
+                            },
+                            '100%': {
+                                transform: 'translateY(0)',
+                                opacity: '1'
+                            }
+                        }
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 1.5s ease-out forwards',
+                        slideDown: 'slideDown .8s ease-out forwards'
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body class="min-h-screen bg-cover bg-center bg-no-repeat animate-fadeIn"
+      style="background-image:url('/images/upperbgt.jpg');">
+
+<!-- Navbar -->
+<nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 animate-slideDown">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+        <div>
+            <h1 class="text-xl font-bold text-violet-800">
+                AIRes Pro
+            </h1>
+            <p class="text-xs text-gray-600">
+                Resume Analyzer
+            </p>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8">
+            <a href="/airesumeanalyzer/home"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                Home
+            </a>
+
+            <a href="/airesumeanalyzer/uploadresume"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                Upload Resume
+            </a>
+
+            <a href="/airesumeanalyzer/myresumes"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                My Resumes
+            </a>
+
+            <a href="/profile"
+               class="text-gray-600 hover:text-violet-600 font-medium">
+                My Profile
+            </a>
+
+            <a href="/airesumeanalyzer/aboutus"
+               class="text-violet-600 font-semibold">
+                About Us
+            </a>
+
+            <a href="/airesumeanalyzer/logout"
+               class="text-red-500 hover:text-red-700 font-medium">
+                Logout
+            </a>
+        </div>
+
+        <div>
+            <h1 class="text-lg font-semibold">
+                Welcome,
+                <span class="text-violet-700"
+                      th:text="${username}">
+                </span>
+            </h1>
+        </div>
+
+    </div>
+</nav>
+
+<!-- Main Content -->
+
+<div class="max-w-6xl mx-auto pt-32 pb-12 px-6">
+
+    <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-10">
+
+        <h1 class="text-4xl font-bold text-violet-800 text-center mb-4">
+            About AIRes Pro
+        </h1>
+
+        <p class="text-gray-700 text-lg text-center leading-8 mb-10">
+            AIRes Pro is an intelligent resume analysis platform designed to
+            help students and professionals improve their resumes using
+            Artificial Intelligence. Our goal is to simplify resume evaluation
+            and provide meaningful insights that help users prepare for
+            internships and job opportunities.
+        </p>
+
+        <!-- Features -->
+
+        <div class="grid md:grid-cols-2 gap-8">
+
+            <div class="bg-violet-50 rounded-2xl p-6 shadow">
+
+                <h2 class="text-2xl font-semibold text-violet-700 mb-4">
+                    🚀 Features
+                </h2>
+
+                <ul class="space-y-3 text-gray-700">
+
+                    <li>✔ Upload and securely store resumes.</li>
+
+                    <li>✔ AI-powered resume analysis.</li>
+
+                    <li>✔ Resume history management.</li>
+
+                    <li>✔ View resumes anytime.</li>
+
+                    <li>✔ Fast and responsive user interface.</li>
+
+                </ul>
+
+            </div>
+
+            <div class="bg-violet-50 rounded-2xl p-6 shadow">
+
+                <h2 class="text-2xl font-semibold text-violet-700 mb-4">
+                    💻 Technologies Used
+                </h2>
+
+                <ul class="space-y-3 text-gray-700">
+
+                    <li>• Java & Spring Boot</li>
+
+                    <li>• Spring MVC</li>
+
+                    <li>• Spring Data JPA</li>
+
+                    <li>• MySQL Database</li>
+
+                    <li>• Thymeleaf</li>
+
+                    <li>• Tailwind CSS</li>
+
+                    <li>• Apache PDFBox</li>
+
+                    <li>• Groq AI API</li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <!-- Mission -->
+
+        <div class="mt-10 bg-violet-100 rounded-2xl p-8">
+
+            <h2 class="text-2xl font-bold text-violet-800 mb-4">
+                🎯 Our Mission
+            </h2>
+
+            <p class="text-gray-700 leading-8">
+                We aim to bridge the gap between job seekers and recruiters by
+                leveraging Artificial Intelligence to provide instant resume
+                feedback. Our mission is to make resume improvement simple,
+                accessible, and effective for everyone.
+            </p>
+
+        </div>
+
+        <!-- Future -->
+
+        <div class="mt-8 bg-white border-l-4 border-violet-600 rounded-xl shadow p-6">
+
+            <h2 class="text-2xl font-bold text-violet-700 mb-3">
+                🔮 Future Enhancements
+            </h2>
+
+            <ul class="space-y-2 text-gray-700">
+
+                <li>✔ ATS Score Calculation</li>
+
+                <li>✔ Job Recommendation System</li>
+
+                <li>✔ Resume Builder</li>
+
+                <li>✔ Cover Letter Generator</li>
+
+                <li>✔ AI Career Guidance</li>
+
+                <li>✔ Skill Gap Analysis</li>
+
+            </ul>
+
+        </div>
+
+        <!-- Footer -->
+
+        <div class="mt-10 text-center text-gray-600">
+
+            <p class="text-lg font-medium">
+                Built with ❤️ using Spring Boot, Thymeleaf and Artificial Intelligence.
+            </p>
+
+            <p class="mt-2 text-sm">
+                © 2026 AIRes Pro. All Rights Reserved.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

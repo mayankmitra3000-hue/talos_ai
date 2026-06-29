@@ -26,4 +26,8 @@ public class Resume {
     @Column(columnDefinition="LONGTEXT")
     private String resumeText;
 
+    @Lob
+    @Column(columnDefinition ="LONGBLOB")
+    private byte[] resumeFile;
+
 }

@@ -203,6 +203,18 @@ public class ResumeController {
         return "viewmyresumes";
     }
 
+    @GetMapping("/aboutus")
+    public String aboutus(HttpSession session, Model model){
+        String username = (String)session.getAttribute("loggedInUser");
+        if(username==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
+        model.addAttribute("username",username);
+        return "aboutuspage";
+
+    }
+
     @GetMapping("/logout")
     public String logout(HttpSession session){
         session.invalidate();
