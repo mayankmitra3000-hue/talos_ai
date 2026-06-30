@@ -1,103 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>My Resumes | AIRes Pro</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    keyframes: {
-                        fadeIn: {
-                            '0%': {opacity: '0'},
-                            '100%': {opacity: '1'}
-                        },
-                        slideDown: {
-                            '0%': {
-                                transform: 'translateY(-100%)',
-                                opacity: '0'
-                            },
-                            '100%': {
-                                transform: 'translateY(0)',
-                                opacity: '1'
-                            }
-                        }
-                    },
-                    animation: {
-                        fadeIn: 'fadeIn 1s ease-out forwards',
-                        slideDown: 'slideDown 0.8s ease-out forwards'
-                    }
-                }
-            }
-        }
-    </script>
-
-</head>
+<div th:replace="~{fragments/head :: head('ViewMyResumes')}"></div>
 
 <body class="min-h-screen bg-cover bg-center bg-no-repeat animate-fadeIn"
       style="background-image:url('/images/upperbgt.jpg');">
 
 <!-- Navbar -->
-<nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 animate-slideDown">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-        <div>
-            <h1 class="text-xl font-bold text-violet-800">
-                AIRes Pro
-            </h1>
-            <p class="text-xs text-gray-600">
-                Resume Analyzer
-            </p>
-        </div>
-
-        <div class="hidden md:flex items-center gap-8">
-
-            <a href="/airesumeanalyzer/home"
-               class="text-gray-600 hover:text-violet-600 font-medium">
-                Home
-            </a>
-
-            <a href="/airesumeanalyzer/uploadresume"
-               class="text-gray-600 hover:text-violet-600 font-medium">
-                Upload Resume
-            </a>
-
-            <a href="/airesumeanalyzer/viewmyresumes"
-               class="text-violet-600 font-semibold">
-                My Resumes
-            </a>
-
-            <a href="/profile"
-               class="text-gray-600 hover:text-violet-600 font-medium">
-                My Profile
-            </a>
-
-            <a href="/airesumeanalyzer/aboutus"
-               class="text-gray-600 hover:text-violet-600 font-medium">
-                About Us
-            </a>
-
-            <a href="/airesumeanalyzer/logout"
-               class="text-red-500 hover:text-red-700 font-medium">
-                Logout
-            </a>
-
-        </div>
-
-        <div>
-            <p th:if="${nouploads}"
-               th:text="${nouploads}"
-               class="text-black-600 text-center mt-3 mb-2">
-            </p>
-        </div>
-
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <!-- Content -->
-
 <div class="max-w-6xl mx-auto pt-32 px-6 pb-10">
 
     <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8">

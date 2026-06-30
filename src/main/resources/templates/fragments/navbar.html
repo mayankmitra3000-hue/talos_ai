@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="navbar"
+     class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 animate-slideDown">
+
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+            <div>
+                <h1 class="text-xl font-bold text-violet-800">
+                    AIRes Pro
+                </h1>
+                <p class="text-xs text-gray-600">
+                    Resume Analyzer
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="hidden md:flex items-center gap-8">
+            <a th:href="@{/airesumeanalyzer/home}"
+               class="text-violet-600 hover:text-violet-800 font-medium transition">
+                Home
+            </a>
+
+            <a th:href="@{/airesumeanalyzer/uploadresume}"
+               class="text-gray-600 hover:text-violet-600 font-medium transition">
+                Upload Resume
+            </a>
+
+            <a th:href="@{/airesumeanalyzer/myresumes}"
+               class="text-gray-600 hover:text-violet-600 font-medium transition">
+                My Resumes
+            </a>
+
+            <a th:href="@{/airesumeanalyzer/profile}"
+               class="text-gray-600 hover:text-violet-600 font-medium transition">
+                My Profile
+            </a>
+
+            <a th:href="@{/airesumeanalyzer/aboutus}"
+               class="text-gray-600 hover:text-violet-600 font-medium transition">
+                About Us
+            </a>
+
+            <a th:href="@{/airesumeanalyzer/logout}"
+               class="text-red-500 hover:text-red-700 font-medium transition">
+                Logout
+            </a>
+        </div>
+
+        <!-- Welcome -->
+        <div class="flex items-center">
+            <h1 class="text-lg font-bold text-black">
+                Welcome,
+                <span class="text-violet-600"
+                      th:text="${username} ?: 'User'"></span>
+            </h1>
+        </div>
+
+    </div>
+
+</nav>
+
+</body>
+</html>
