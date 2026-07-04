@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="~{fragments/head :: head('ATS Score Generator')}"></div>
+
+<body class="relative min-h-screen bg-cover bg-center bg-no-repeat animate-fadeIn select-none"
+      style="background-image: url('/images/upperbgt.jpg');">
+
+<!-- Dark Overlay -->
+<div class="absolute inset-0 bg-black/50"></div>
+
+<!-- Page Content -->
+<div class="relative z-10">
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Spacer -->
+    <div class="h-24"></div>
+
+    <div class="max-w-4xl mx-auto px-6 pb-16">
+
+        <!-- Header -->
+        <div class="text-center mb-10">
+
+            <div class="inline-flex items-center justify-center
+                        w-20 h-20 rounded-3xl
+                        bg-gradient-to-r from-purple-500 to-pink-500
+                        text-5xl text-white shadow-2xl mb-6">
+                📊
+            </div>
+
+            <h1 class="text-5xl font-extrabold text-white">
+                ATS Score Generator
+            </h1>
+
+            <p class="text-gray-200 text-lg mt-4 max-w-2xl mx-auto leading-8">
+                Upload your resume to receive an estimated ATS score based on
+                keywords, formatting, readability, grammar, and overall
+                Applicant Tracking System compatibility.
+            </p>
+
+        </div>
+
+        <!-- Upload Card -->
+        <div class="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border-t-4 border-purple-500 p-10">
+
+            <form th:action="@{/airesumeanalyzer/ats-score-generator/results}"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <!-- Upload Area -->
+                <label for="resume"
+                       class="flex flex-col items-center justify-center
+                              border-2 border-dashed border-purple-400
+                              rounded-3xl h-72 cursor-pointer
+                              hover:border-purple-600
+                              hover:bg-purple-50
+                              transition">
+
+                    <div class="text-6xl mb-4">
+                        📄
+                    </div>
+
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        Upload Resume
+                    </h2>
+
+                    <p class="text-gray-600 mt-2 text-center">
+                        Drag & Drop your resume here
+                        <br>
+                        or click to browse
+                    </p>
+
+                    <p class="text-sm text-gray-500 mt-4">
+                        Supported formats: PDF, DOC, DOCX
+                    </p>
+
+                    <input
+                            id="resume"
+                            name="resume"
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            required
+                            class="hidden">
+
+                </label>
+
+                <!-- File Name -->
+                <div class="mt-6 text-center">
+
+                    <p id="fileName"
+                       class="text-purple-700 font-semibold">
+                        No file selected
+                    </p>
+
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-10 text-center">
+
+                    <button
+                            type="submit"
+                            class="px-10 py-4 rounded-xl
+                                   bg-purple-600
+                                   hover:bg-purple-700
+                                   text-white
+                                   text-lg
+                                   font-bold
+                                   shadow-lg
+                                   transition
+                                   hover:scale-105">
+
+                        Generate ATS Score →
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const fileInput = document.getElementById("resume");
+    const fileName = document.getElementById("fileName");
+
+    fileInput.addEventListener("change", function () {
+
+        if (this.files.length > 0) {
+            fileName.textContent = "Selected File: " + this.files[0].name;
+        } else {
+            fileName.textContent = "No file selected";
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

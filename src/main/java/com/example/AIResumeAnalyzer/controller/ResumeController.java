@@ -38,6 +38,18 @@ public class ResumeController {
         return "firstpage";
     }
 
+    @GetMapping("/analyzeresume")
+    public String analyzeresume(HttpSession session, Model model){
+        String username = (String)session.getAttribute("loggedInUser");
+        if(username==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
+        model.addAttribute("username",username);
+        return "analyzeresumepage";
+
+    }
+
     @PostMapping("/analyzeresume")
     public String analyzeResume(@RequestParam("resume")MultipartFile file, HttpSession session, Model model){
 
@@ -214,6 +226,51 @@ public class ResumeController {
         return "aboutuspage";
 
     }
+
+    @GetMapping("/ats-score-generator")
+    public String atsgenerator(HttpSession session, Model model){
+        String username = (String)session.getAttribute("loggedInUser");
+        if(username==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
+        model.addAttribute("username",username);
+        return "atsscorepage";
+    }
+
+    @PostMapping("/ats-score-generator/results")
+    public String atsgenerator(@RequestParam("resume")MultipartFile file, HttpSession session, Model model){
+
+        if(session.getAttribute("loggedInUser")==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
+        try{
+
+            if (file.isEmpty()) {
+                model.addAttribute("error", "Please select a PDF file.");
+                return "home";
+            }
+
+            PDDocument document = Loader.loadPDF(file.getBytes());
+
+            PDFTextStripper textStripper = new PDFTextStripper();
+            String resumeText = textStripper.getText(document);
+
+            document.close();
+
+            String analysis = groqService.atsScoreGeneration(resumeText);
+
+            model.addAttribute("analysis",analysis);
+            System.out.println(resumeText);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            model.addAttribute("error","Failed to read PDF File");
+        }
+        return "atsresult";
+    }
+
 
     @GetMapping("/logout")
     public String logout(HttpSession session){
