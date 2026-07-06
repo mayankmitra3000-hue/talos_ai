@@ -14,11 +14,9 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -271,6 +269,14 @@ public class ResumeController {
         return "atsresult";
     }
 
+    @PostMapping("/deleteresume/{id}")
+    public String deleteResume(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes){
+        String username = (String) session.getAttribute("loggedInUser");
+        resumeService.deleteResume(id,username);
+
+        redirectAttributes.addFlashAttribute("success","Resume deleted successfully...");
+        return "redirect:/airesumeanalyzer/myresumes";
+    }
 
     @GetMapping("/logout")
     public String logout(HttpSession session){

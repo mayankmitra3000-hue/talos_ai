@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,5 +49,14 @@ public class ResumeServiceImpl implements ResumeService {
         return resumeRepository.findByUser(user);
     }
 
+    @Override
+    public void deleteResume(Long id, String username){
+        Resume resume = resumeRepository
+                .findByResumeIdAndUserUsername(id,username)
+                .orElseThrow(()->
+                        new AccessDeniedException("Resume not found or Access Denied !"));
+
+        resumeRepository.delete(resume);
+    }
 
 }

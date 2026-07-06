@@ -10,5 +10,6 @@ public interface ResumeService {
 
     void saveResume(String username, MultipartFile file, String resumeText);
     List<Resume> findByUser(User user);
+    void deleteResume(Long id, String username);
 
 }
