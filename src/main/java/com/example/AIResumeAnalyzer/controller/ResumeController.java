@@ -225,6 +225,61 @@ public class ResumeController {
 
     }
 
+    @GetMapping("/bestresumefinder")
+    public String bestResumePage(HttpSession session, Model model){
+        String username = (String)session.getAttribute("loggedInUser");
+        if(username==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
+        model.addAttribute("username",username);
+        return "jdpage";
+
+    }
+
+    @PostMapping("/bestresumefinder")
+    public String bestResumePage(
+            @RequestParam String jobTitle,
+            @RequestParam String experience,
+            @RequestParam String requiredSkills,
+            @RequestParam(required = false) String preferredSkills,
+            @RequestParam(required = false) String education,
+            @RequestParam(required = false) String qualifications,
+            HttpSession session,
+            Model model){
+        String username = (String)session.getAttribute("loggedInUser");
+        if (username==null){
+            return "redirect:/airesumeanalyzer";
+        }
+
+        String jobDescription = """
+            Job Title: %s
+
+            Experience: %s
+
+            Required Skills:
+            %s
+
+            Preferred Skills:
+            %s
+
+            Education:
+            %s
+
+            Qualifications:
+            %s
+            """.formatted(
+                jobTitle,
+                experience,
+                requiredSkills,
+                preferredSkills,
+                education,
+                qualifications
+        );
+
+        return "bestresumeresult";
+    }
+
     @GetMapping("/ats-score-generator")
     public String atsgenerator(HttpSession session, Model model){
         String username = (String)session.getAttribute("loggedInUser");
