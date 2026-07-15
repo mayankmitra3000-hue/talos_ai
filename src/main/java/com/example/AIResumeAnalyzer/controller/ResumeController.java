@@ -6,6 +6,7 @@ import com.example.AIResumeAnalyzer.repository.ResumeRepository;
 import com.example.AIResumeAnalyzer.service.AuthService;
 import com.example.AIResumeAnalyzer.service.GroqService;
 import com.example.AIResumeAnalyzer.service.ResumeService;
+import com.example.AIResumeAnalyzer.service.ResumeVectorService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.List;
 public class ResumeController {
 
     private final ResumeService resumeService;
+    private final ResumeVectorService resumeVectorService;
     private final AuthService authService;
     private final GroqService groqService;
 //    private final HttpSession session; -----> Field injection not required when method parameter injection is available
@@ -156,40 +158,86 @@ public class ResumeController {
 
     @PostMapping("/uploadresume")
     public String uploadResume(@RequestParam("resume") MultipartFile file,
-                               HttpSession session,Model model){
+                               HttpSession session,
+                               RedirectAttributes redirectAttributes) {
+
         String username = (String) session.getAttribute("loggedInUser");
 
-        if(username==null){
+        if (username == null) {
             return "redirect:/airesumeanalyzer";
         }
 
-        try{
-            if(file.isEmpty()){
-                model.addAttribute("error","Please select a pdf file...");
-                return "resumeuploadpage";
-            }
-
-            if (!"application/pdf".equals(file.getContentType()) || !file.getOriginalFilename().toLowerCase().endsWith(".pdf")){
-                model.addAttribute("error", "Only PDF files are allowed.");
-                return "resumeuploadpage";
-            }
-
-            PDDocument document = Loader.loadPDF(file.getBytes());
-            PDFTextStripper stripper = new PDFTextStripper();
-            String resumeText = stripper.getText(document);
-            document.close();
-
-            resumeService.saveResume(username,file,resumeText);
-
-            model.addAttribute("uploaded","Resume uploaded successfully...");
-            return "resumeuploadpage";
+        // File selected?
+        if (file == null || file.isEmpty()) {
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Please select a PDF file."
+            );
+            return "redirect:/airesumeanalyzer/uploadresume";
         }
 
-        catch(IOException e){
+        // Validate PDF
+        String originalFileName = file.getOriginalFilename();
+
+        if (originalFileName == null ||
+                !originalFileName.toLowerCase().endsWith(".pdf")) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Only PDF files are allowed."
+            );
+
+            return "redirect:/airesumeanalyzer/uploadresume";
+        }
+
+        try {
+
+            String resumeText;
+
+            try (PDDocument document = Loader.loadPDF(file.getBytes())) {
+
+                PDFTextStripper stripper = new PDFTextStripper();
+                resumeText = stripper.getText(document);
+            }
+
+            // Empty PDF?
+            if (resumeText == null || resumeText.isBlank()) {
+
+                redirectAttributes.addFlashAttribute(
+                        "error",
+                        "No readable text was found in the PDF."
+                );
+
+                return "redirect:/airesumeanalyzer/uploadresume";
+            }
+
+            // Save into MySQL
+            Resume savedResume =
+                    resumeService.saveResume(
+                            username,
+                            file,
+                            resumeText
+                    );
+
+            // Store embeddings into Qdrant
+            resumeVectorService.indexResume(savedResume);
+
+            redirectAttributes.addFlashAttribute(
+                    "success",
+                    "Resume uploaded successfully."
+            );
+
+        } catch (Exception e) {
+
             e.printStackTrace();
-            model.addAttribute("error","Failed to upload the resume...");
-            return "resumeuploadpage";
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Failed to upload resume: " + e.getMessage()
+            );
         }
+
+        return "redirect:/airesumeanalyzer/uploadresume";
     }
 
     @GetMapping("/myresumes")

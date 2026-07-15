@@ -21,28 +21,43 @@ public class ResumeServiceImpl implements ResumeService {
     private final ResumeRepository resumeRepository;
 
     @Override
-    public void saveResume(String username, MultipartFile file, String resumeText){
+    public Resume saveResume(
+            String username,
+            MultipartFile file,
+            String resumeText
+    ) throws IOException {
 
-        User user = userRepository.findByUsername(username);
+        User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "User not found"
+                        )
+                );
 
-        if(user==null){
-            throw new IllegalArgumentException("User not found !");
-        }
+        Resume resume = new Resume();
 
-        try {
-            Resume resume = new Resume();
-            resume.setFileName(file.getOriginalFilename());
-            resume.setResumeFile(file.getBytes());
-            resume.setUploadedAt(LocalDateTime.now());
-            resume.setResumeText(resumeText);
-            resume.setUser(user);
+        resume.setFileName(
+                file.getOriginalFilename()
+        );
 
-            resumeRepository.save(resume);
-        }
-        catch (IOException e){
-            throw new RuntimeException("Failed to read uploaded file",e);
-        }
+        resume.setUploadedAt(
+                LocalDateTime.now()
+        );
+
+        resume.setResumeText(
+                resumeText
+        );
+
+        resume.setResumeFile(
+                file.getBytes()
+        );
+
+        resume.setUser(user);
+
+        return resumeRepository.save(resume);
     }
+
 
     @Override
     public List<Resume> findByUser(User user) {
@@ -57,6 +72,24 @@ public class ResumeServiceImpl implements ResumeService {
                         new AccessDeniedException("Resume not found or Access Denied !"));
 
         resumeRepository.delete(resume);
+    }
+
+    @Override
+    public Resume getResumeByIdAndUsername(
+            Long resumeId,
+            String username
+    ) {
+
+        return resumeRepository
+                .findByResumeIdAndUserUsername(
+                        resumeId,
+                        username
+                )
+                .orElseThrow(() ->
+                        new AccessDeniedException(
+                                "Resume not found or access denied"
+                        )
+                );
     }
 
 }
