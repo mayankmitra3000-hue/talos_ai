@@ -628,10 +628,45 @@ public class ResumeController {
         User user = authService.findUserbyUsername(username);
 
         model.addAttribute("user",user);
+        model.addAttribute("username", username);
+
         return "myprofile";
     }
 
+    @PostMapping("/myprofile")
+    public String updateProfile(@ModelAttribute("user") User formUser,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes,
+                                Model model){
+        String loggedInUsername =
+                (String) session.getAttribute("loggedInUser");
 
+        if (loggedInUsername == null) {
+            return "redirect:/airesumeanalyzer";
+        }
+
+        User existingUser =
+                authService.findUserbyUsername(loggedInUsername);
+
+        if (existingUser == null) {
+            session.invalidate();
+            return "redirect:/airesumeanalyzer";
+        }
+
+        // Update only fields that the user is allowed to change
+        existingUser.setFullName(formUser.getFullName());
+        existingUser.setContact(formUser.getContact());
+        existingUser.setEmail(formUser.getEmail());
+
+        authService.updateProfile(existingUser);
+
+        redirectAttributes.addFlashAttribute(
+                "success",
+                "Profile updated successfully."
+        );
+
+        return "redirect:/airesumeanalyzer/myprofile";
+    }
 
     @GetMapping("/logout")
     public String logout(HttpSession session){

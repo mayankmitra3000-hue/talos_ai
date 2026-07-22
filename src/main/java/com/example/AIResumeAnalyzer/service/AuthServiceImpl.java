@@ -53,4 +53,8 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.findByUsername(username);
     }
 
+    @Override
+    public void updateProfile(User user){
+        userRepository.save(user);
+    }
 }
