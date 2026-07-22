@@ -621,6 +621,18 @@ public class ResumeController {
         return "redirect:/airesumeanalyzer/myresumes";
     }
 
+    @GetMapping("/myprofile")
+    public String myProfile(HttpSession session, Model model){
+
+        String username = (String) session.getAttribute("loggedInUser");
+        User user = authService.findUserbyUsername(username);
+
+        model.addAttribute("user",user);
+        return "myprofile";
+    }
+
+
+
     @GetMapping("/logout")
     public String logout(HttpSession session){
         session.invalidate();
