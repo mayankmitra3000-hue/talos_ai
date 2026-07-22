@@ -2,11 +2,7 @@ package com.example.AIResumeAnalyzer.controller;
 
 import com.example.AIResumeAnalyzer.entity.User;
 import com.example.AIResumeAnalyzer.entity.Resume;
-import com.example.AIResumeAnalyzer.repository.ResumeRepository;
-import com.example.AIResumeAnalyzer.service.AuthService;
-import com.example.AIResumeAnalyzer.service.GroqService;
-import com.example.AIResumeAnalyzer.service.ResumeService;
-import com.example.AIResumeAnalyzer.service.ResumeVectorService;
+import com.example.AIResumeAnalyzer.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,9 +25,10 @@ import java.util.List;
 public class ResumeController {
 
     private final ResumeService resumeService;
-    private final ResumeVectorService resumeVectorService;
+    private final ResumeVectorServiceImpl resumeVectorService;
     private final AuthService authService;
     private final GroqService groqService;
+    private final BestResumeService bestResumeService;
 //    private final HttpSession session; -----> Field injection not required when method parameter injection is available
 
     @GetMapping
@@ -286,24 +284,101 @@ public class ResumeController {
     }
 
     @PostMapping("/bestresumefinder")
-    public String bestResumePage(
+    public String findBestResume(
             @RequestParam String jobTitle,
-            @RequestParam String experience,
+
+            @RequestParam(
+                    required = false,
+                    defaultValue = ""
+            )
+            String experience,
+
             @RequestParam String requiredSkills,
-            @RequestParam(required = false) String preferredSkills,
-            @RequestParam(required = false) String education,
-            @RequestParam(required = false) String qualifications,
+
+            @RequestParam(
+                    required = false,
+                    defaultValue = ""
+            )
+            String preferredSkills,
+
+            @RequestParam(
+                    required = false,
+                    defaultValue = ""
+            )
+            String education,
+
+            @RequestParam(
+                    required = false,
+                    defaultValue = ""
+            )
+            String qualifications,
+
             HttpSession session,
-            Model model){
-        String username = (String)session.getAttribute("loggedInUser");
-        if (username==null){
+            Model model
+    ) {
+
+        String username =
+                (String) session.getAttribute("loggedInUser");
+
+        if (username == null) {
             return "redirect:/airesumeanalyzer";
         }
 
-        String jobDescription = """
-            Job Title: %s
+        /*
+         * Server-side validation
+         */
+        if (jobTitle == null || jobTitle.isBlank()) {
 
-            Experience: %s
+            model.addAttribute(
+                    "error",
+                    "Job title is required."
+            );
+
+            preserveJobFormData(
+                    model,
+                    jobTitle,
+                    experience,
+                    requiredSkills,
+                    preferredSkills,
+                    education,
+                    qualifications
+            );
+
+            return "jdpage";
+        }
+
+        if (requiredSkills == null
+                || requiredSkills.isBlank()) {
+
+            model.addAttribute(
+                    "error",
+                    "Required skills are required."
+            );
+
+            preserveJobFormData(
+                    model,
+                    jobTitle,
+                    experience,
+                    requiredSkills,
+                    preferredSkills,
+                    education,
+                    qualifications
+            );
+
+            return "jdpage";
+        }
+
+        /*
+         * Combine all form fields into one query.
+         * Voyage AI will convert this text into
+         * a query embedding.
+         */
+        String jobDescription = """
+            Job Title:
+            %s
+
+            Required Experience:
+            %s
 
             Required Skills:
             %s
@@ -314,18 +389,183 @@ public class ResumeController {
             Education:
             %s
 
-            Qualifications:
+            Additional Qualifications:
             %s
             """.formatted(
-                jobTitle,
-                experience,
-                requiredSkills,
-                preferredSkills,
-                education,
-                qualifications
+                cleanValue(jobTitle),
+                cleanValue(experience),
+                cleanValue(requiredSkills),
+                cleanValue(preferredSkills),
+                cleanValue(education),
+                cleanValue(qualifications)
         );
 
-        return "bestresumeresult";
+        try {
+
+            /*
+             * Voyage AI:
+             * Converts jobDescription into query embedding.
+             *
+             * Qdrant:
+             * Searches matching resume chunks.
+             */
+            List<Map<String, Object>> matches =
+                    bestResumeService.findBestResumes(
+                            username,
+                            jobDescription
+                    );
+
+            if (matches.isEmpty()) {
+
+                model.addAttribute(
+                        "error",
+                        "No matching indexed resumes were found."
+                );
+
+                preserveJobFormData(
+                        model,
+                        jobTitle,
+                        experience,
+                        requiredSkills,
+                        preferredSkills,
+                        education,
+                        qualifications
+                );
+
+                return "jdpage";
+            }
+
+            /*
+             * Send only the top five retrieved resumes
+             * to Groq for final recruiter-style analysis.
+             */
+            List<Map<String, Object>> topMatches =
+                    matches.stream()
+                            .limit(5)
+                            .toList();
+
+            String aiComparison =
+                    groqService.compareResumesWithJob(
+                            jobDescription,
+                            topMatches
+                    );
+
+            /*
+             * Data for result page.
+             */
+            model.addAttribute("username", username);
+            model.addAttribute("matches", topMatches);
+            model.addAttribute("aiComparison", aiComparison);
+
+            model.addAttribute(
+                    "jobDescription",
+                    jobDescription
+            );
+
+            model.addAttribute(
+                    "jobTitle",
+                    cleanValue(jobTitle)
+            );
+
+            model.addAttribute(
+                    "experience",
+                    cleanValue(experience)
+            );
+
+            model.addAttribute(
+                    "requiredSkills",
+                    cleanValue(requiredSkills)
+            );
+
+            model.addAttribute(
+                    "preferredSkills",
+                    cleanValue(preferredSkills)
+            );
+
+            model.addAttribute(
+                    "education",
+                    cleanValue(education)
+            );
+
+            model.addAttribute(
+                    "qualifications",
+                    cleanValue(qualifications)
+            );
+
+            return "bestresumeresult";
+
+        } catch (Exception exception) {
+
+            exception.printStackTrace();
+
+            model.addAttribute(
+                    "error",
+                    "Unable to find the best resume: "
+                            + exception.getMessage()
+            );
+
+            preserveJobFormData(
+                    model,
+                    jobTitle,
+                    experience,
+                    requiredSkills,
+                    preferredSkills,
+                    education,
+                    qualifications
+            );
+
+            return "bestresumeresult";
+        }
+    }
+
+    private String cleanValue(String value) {
+
+        if (value == null || value.isBlank()) {
+            return "Not specified";
+        }
+
+        return value.trim();
+    }
+
+    private void preserveJobFormData(
+            Model model,
+            String jobTitle,
+            String experience,
+            String requiredSkills,
+            String preferredSkills,
+            String education,
+            String qualifications
+    ) {
+
+        model.addAttribute(
+                "jobTitle",
+                jobTitle
+        );
+
+        model.addAttribute(
+                "experience",
+                experience
+        );
+
+        model.addAttribute(
+                "requiredSkills",
+                requiredSkills
+        );
+
+        model.addAttribute(
+                "preferredSkills",
+                preferredSkills
+        );
+
+        model.addAttribute(
+                "education",
+                education
+        );
+
+        model.addAttribute(
+                "qualifications",
+                qualifications
+        );
     }
 
     @GetMapping("/ats-score-generator")

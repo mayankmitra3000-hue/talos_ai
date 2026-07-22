@@ -19,6 +19,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     private final UserRepository userRepository;
     private final ResumeRepository resumeRepository;
+    private final ResumeVectorService resumeVectorService;
 
     @Override
     public Resume saveResume(
@@ -27,13 +28,11 @@ public class ResumeServiceImpl implements ResumeService {
             String resumeText
     ) throws IOException {
 
-        User user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "User not found"
-                        )
-                );
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
 
         Resume resume = new Resume();
 
@@ -70,6 +69,11 @@ public class ResumeServiceImpl implements ResumeService {
                 .findByResumeIdAndUserUsername(id,username)
                 .orElseThrow(()->
                         new AccessDeniedException("Resume not found or Access Denied !"));
+
+        resumeVectorService.deleteResumeEmbeddings(
+                resume.getResumeId(),
+                username
+        );
 
         resumeRepository.delete(resume);
     }
