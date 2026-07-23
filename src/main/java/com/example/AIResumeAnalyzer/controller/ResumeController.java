@@ -14,6 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.nio.charset.StandardCharsets;
 
 import java.io.IOException;
 import java.util.List;
@@ -257,6 +264,55 @@ public class ResumeController {
         model.addAttribute("resumes",resumes);
 
         return "viewmyresumes";
+    }
+
+    @GetMapping("/resume/view/{id}")
+    public ResponseEntity<byte[]> viewResume(
+            @PathVariable("id") Long resumeId,
+            HttpSession session
+    ) {
+
+        String username =
+                (String) session.getAttribute("loggedInUser");
+
+        if (username == null) {
+            return ResponseEntity
+                    .status(401)
+                    .build();
+        }
+
+        Resume resume =
+                resumeService.getResumeByIdAndUsername(
+                        resumeId,
+                        username
+                );
+
+        byte[] resumeFile = resume.getResumeFile();
+
+        if (resumeFile == null || resumeFile.length == 0) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+
+        String fileName = resume.getFileName();
+
+        if (fileName == null || fileName.isBlank()) {
+            fileName = "resume.pdf";
+        }
+
+        String encodedFileName = java.net.URLEncoder
+                .encode(fileName, StandardCharsets.UTF_8)
+                .replace("+", "%20");
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename*=UTF-8''" + encodedFileName
+                )
+                .contentLength(resumeFile.length)
+                .body(resumeFile);
     }
 
     @GetMapping("/aboutus")
