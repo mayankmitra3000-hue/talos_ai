@@ -42,7 +42,10 @@ public class ResumeVectorServiceImpl
             WebClient.Builder webClientBuilder,
 
             @Value("${qdrant.rest-url}")
-            String qdrantRestUrl
+            String qdrantRestUrl,
+
+            @Value("${qdrant.api-key}")
+            String qdrantApiKey
     ) {
         this.documentEmbeddingModel =
                 documentEmbeddingModel;
@@ -59,6 +62,10 @@ public class ResumeVectorServiceImpl
         this.qdrantWebClient =
                 webClientBuilder
                         .baseUrl(qdrantRestUrl)
+                        .defaultHeader(
+                                "api-key",
+                                qdrantApiKey
+                        )
                         .build();
     }
 
