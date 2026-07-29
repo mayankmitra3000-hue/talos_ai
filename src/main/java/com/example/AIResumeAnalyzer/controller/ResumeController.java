@@ -38,7 +38,7 @@ public class ResumeController {
     private final BestResumeService bestResumeService;
 //    private final HttpSession session; -----> Field injection not required when method parameter injection is available
 
-    @GetMapping
+    @GetMapping({"","/"})
     public String firstPage(){
         return "firstpage";
     }
