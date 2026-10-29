@@ -22,6 +22,7 @@
 
                 <p class="text-gray-600 mt-2">
                     Manage and analyze all your uploaded resumes.
+                    Your default resume is the one evaluated when matching with job descriptions.
                 </p>
             </div>
 
@@ -30,6 +31,16 @@
                 + Upload Resume
             </a>
 
+        </div>
+
+        <div th:if="${success}"
+             class="mb-6 rounded-xl border border-green-300 bg-green-100 text-green-700 px-5 py-4">
+            <p th:text="${success}"></p>
+        </div>
+
+        <div th:if="${error}"
+             class="mb-6 rounded-xl border border-red-300 bg-red-100 text-red-700 px-5 py-4">
+            <p th:text="${error}"></p>
         </div>
 
         <!-- Empty State -->
@@ -69,6 +80,8 @@
 
                     <th class="p-4 text-left">Uploaded On</th>
 
+                    <th class="p-4 text-center">Default</th>
+
                     <th class="p-4 text-center">Actions</th>
 
                 </tr>
@@ -92,15 +105,40 @@
                         th:text="${#temporals.format(resume.uploadedAt,'dd MMM yyyy HH:mm')}">
                     </td>
 
+                    <td class="p-4 text-center">
+
+                        <span th:if="${resume.isDefault}"
+                              class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                            Default
+                        </span>
+
+                        <span th:unless="${resume.isDefault}"
+                              class="inline-block bg-gray-100 text-gray-500 px-4 py-2 rounded-lg text-sm">
+                            Not Default
+                        </span>
+
+                    </td>
+
                     <td class="p-4">
 
-                        <div class="flex justify-center gap-3">
+                        <div class="flex flex-wrap justify-center gap-3">
 
                             <a th:href="@{/airesumeanalyzer/resume/view/{id}(id=${resume.resumeId})}"
                                target="_blank"
                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
                                 View
                             </a>
+
+                            <form th:unless="${resume.isDefault}"
+                                  th:action="@{/airesumeanalyzer/setdefaultresume/{id}(id=${resume.resumeId})}"
+                                  method="post">
+
+                                <button type="submit"
+                                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
+                                    Set Default
+                                </button>
+
+                            </form>
 
                             <form th:action="@{/airesumeanalyzer/deleteresume/{id}(id=${resume.resumeId})}"
                                   method="post"

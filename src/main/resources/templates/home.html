@@ -22,74 +22,71 @@
         <!-- Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            <!-- Resume Analyzer -->
-            <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-blue-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-blue-400/30">
-
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
-                    📄
+            <!-- Student View -->
+            <th:block th:if="${userRole == null || userRole == 'STUDENT'}">
+                <!-- Resume Analyzer -->
+                <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-blue-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-blue-400/30">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
+                        📄
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Analyse Resume</h2>
+                    <p class="text-gray-600 leading-7 mb-8">Upload your resume and receive AI-powered feedback on grammar, formatting, strengths, weaknesses and personalized suggestions.</p>
+                    <a href="/airesumeanalyzer/analyzeresume" class="inline-block px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">Analyse Now →</a>
                 </div>
 
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">
-                    Analyse Resume
-                </h2>
-
-                <p class="text-gray-600 leading-7 mb-8">
-                    Upload your resume and receive AI-powered feedback on grammar,
-                    formatting, strengths, weaknesses and personalized suggestions.
-                </p>
-
-                <a href="/airesumeanalyzer/analyzeresume"
-                   class="inline-block px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
-                    Analyse Now →
-                </a>
-
-            </div>
-
-            <!-- ATS Score -->
-            <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-purple-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-purple-400/30">
-
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
-                    📊
+                <!-- ATS Score -->
+                <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-purple-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-purple-400/30">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
+                        📊
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">ATS Score Generator</h2>
+                    <p class="text-gray-600 leading-7 mb-8">Measure how well your resume performs with Applicant Tracking Systems and improve your chances of getting shortlisted.</p>
+                    <a href="/airesumeanalyzer/ats-score-generator" class="inline-block px-6 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 transition">Check Score →</a>
                 </div>
 
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">
-                    ATS Score Generator
-                </h2>
+                <!-- My Allocations -->
+                <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-green-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-green-400/30">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
+                        🎯
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">My Allocations</h2>
+                    <p class="text-gray-600 leading-7 mb-8">View the internships allocated to you based on your resume and job requirements.</p>
+                    <a href="/airesumeanalyzer/myallocations" class="inline-block px-6 py-3 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition">View Allocations →</a>
+                </div>
+            </th:block>
 
-                <p class="text-gray-600 leading-7 mb-8">
-                    Measure how well your resume performs with Applicant Tracking
-                    Systems and improve your chances of getting shortlisted.
-                </p>
-
-                <a href="/airesumeanalyzer/ats-score-generator"
-                   class="inline-block px-6 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 transition">
-                    Check Score →
-                </a>
-
-            </div>
-
-            <!-- Resume Finder -->
-            <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-cyan-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-cyan-400/30">
-
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
-                    🎯
+            <!-- Admin View -->
+            <th:block th:if="${userRole == 'ADMIN'}">
+                <!-- Manage Internships -->
+                <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-cyan-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-cyan-400/30">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
+                        📝
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Manage Internships</h2>
+                    <p class="text-gray-600 leading-7 mb-8">Upload internship opportunities with job descriptions, required skills, and seat limits.</p>
+                    <a href="/airesumeanalyzer/admin/internships" class="inline-block px-6 py-3 rounded-xl bg-cyan-600 text-white font-semibold hover:bg-cyan-700 transition">Manage Internships →</a>
                 </div>
 
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">
-                    Best Resume Finder
-                </h2>
+                <!-- Best Ranked Resumes -->
+                <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-violet-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-violet-400/30">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
+                        🏆
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Best Ranked Resumes</h2>
+                    <p class="text-gray-600 leading-7 mb-8">View best ranked resumes as per internships using RAG-based matching.</p>
+                    <a href="/airesumeanalyzer/admin/bestresumes" class="inline-block px-6 py-3 rounded-xl bg-violet-600 text-white font-semibold hover:bg-violet-700 transition">View Rankings →</a>
+                </div>
 
-                <p class="text-gray-600 leading-7 mb-8">
-                    Upload multiple resumes and a job description. AI identifies
-                    the resume that best matches the employer's requirements.
-                </p>
-
-                <a href="/airesumeanalyzer/bestresumefinder"
-                   class="inline-block px-6 py-3 rounded-xl bg-cyan-600 text-white font-semibold hover:bg-cyan-700 transition">
-                    Find Best Resume →
-                </a>
-
-            </div>
+                <!-- Allocate Students -->
+                <div class="bg-white/90 rounded-3xl shadow-2xl border-t-4 border-orange-500 p-8 transition-all duration-300 hover:-translate-y-3 hover:shadow-orange-400/30">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-3xl text-white shadow-lg mb-6">
+                        🤝
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Auto Allocate</h2>
+                    <p class="text-gray-600 leading-7 mb-8">Automatically allocate students to appropriate internships based on resume-job matching with seat limits.</p>
+                    <a href="/airesumeanalyzer/admin/allocations" class="inline-block px-6 py-3 rounded-xl bg-orange-600 text-white font-semibold hover:bg-orange-700 transition">Allocate Now →</a>
+                </div>
+            </th:block>
 
         </div>
 

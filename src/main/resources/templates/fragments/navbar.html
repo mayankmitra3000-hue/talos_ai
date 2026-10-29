@@ -26,15 +26,33 @@
                 Home
             </a>
 
-            <a th:href="@{/airesumeanalyzer/uploadresume}"
-               class="text-gray-600 hover:text-violet-600 font-medium transition">
-                Upload Resume
-            </a>
+            <th:block th:if="${userRole == null || userRole == 'STUDENT'}">
+                <a th:href="@{/airesumeanalyzer/uploadresume}"
+                   class="text-gray-600 hover:text-violet-600 font-medium transition">
+                    Upload Resume
+                </a>
 
-            <a th:href="@{/airesumeanalyzer/myresumes}"
-               class="text-gray-600 hover:text-violet-600 font-medium transition">
-                My Resumes
-            </a>
+                <a th:href="@{/airesumeanalyzer/myresumes}"
+                   class="text-gray-600 hover:text-violet-600 font-medium transition">
+                    My Resumes
+                </a>
+
+                <a th:href="@{/airesumeanalyzer/myallocations}"
+                   class="text-gray-600 hover:text-violet-600 font-medium transition">
+                    My Allocations
+                </a>
+            </th:block>
+
+            <th:block th:if="${userRole == 'ADMIN'}">
+                <a th:href="@{/airesumeanalyzer/admin/internships}"
+                   class="text-gray-600 hover:text-violet-600 font-medium transition">
+                    Manage Internships
+                </a>
+                <a th:href="@{/airesumeanalyzer/admin/allocations}"
+                   class="text-gray-600 hover:text-violet-600 font-medium transition">
+                    Allocate Students
+                </a>
+            </th:block>
 
             <a th:href="@{/airesumeanalyzer/myprofile}"
                class="text-gray-600 hover:text-violet-600 font-medium transition">

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head :: head('Allocate Students')}"></div>
+<body class="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat" style="background-image:url('/images/upperbgt.jpg');">
+<div class="fixed inset-0 bg-black/60"></div>
+<div class="relative z-10">
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="h-24"></div>
+    <main class="max-w-7xl mx-auto px-6 pb-14">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-white">Auto Allocate Students</h1>
+            <p class="mt-3 text-gray-200">Automatically allocate students to internships based on matching with seat limits</p>
+        </div>
+
+        <div class="mb-8 rounded-3xl bg-white/95 border-t-4 border-orange-500 p-8 shadow-2xl">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Run Allocation</h2>
+            <div th:if="${success}" class="mb-4 rounded-xl border border-green-300 bg-green-100 text-green-700 px-5 py-4">
+                <p th:text="${success}"></p>
+            </div>
+            <div th:if="${error}" class="mb-4 rounded-xl border border-red-300 bg-red-100 text-red-700 px-5 py-4">
+                <p th:text="${error}"></p>
+            </div>
+            <form th:action="@{/airesumeanalyzer/admin/allocate}" method="post" class="flex gap-4">
+                <select name="internshipId" required class="flex-1 rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none">
+                    <option value="">-- Select Internship --</option>
+                    <option th:each="internship : ${internships}" th:value="${internship.id}" th:text="${internship.title + ' (Seats: ' + internship.seats + ', Allocated: ' + internship.allocatedCount + ')'}"></option>
+                </select>
+                <button type="submit" class="px-8 py-3 rounded-xl bg-orange-600 text-white font-semibold hover:bg-orange-700 transition">Allocate Students</button>
+            </form>
+        </div>
+
+        <div class="rounded-3xl bg-white/95 border-t-4 border-green-500 p-8 shadow-2xl">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">All Allocations</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Student</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Internship</th>
+                            <th class="text-left py-3 px-4 font-semibold text-gray-700">Match Score</th>
+                            <th class="text-center py-3 px-4 font-semibold text-gray-700">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="allocation : ${allocations}" class="border-b border-gray-100">
+                            <td class="py-3 px-4 text-gray-800"><span th:text="${allocation.student.fullName}"></span> (<span th:text="${allocation.student.username}"></span>)</td>
+                            <td class="py-3 px-4 text-gray-800" th:text="${allocation.internship.title}"></td>
+                            <td class="py-3 px-4 text-violet-600 font-semibold"><span th:text="${#numbers.formatDecimal(allocation.matchScore * 100, 1, 2)}"></span>%</td>
+                            <td class="py-3 px-4 text-center">
+                                <form th:action="@{/airesumeanalyzer/admin/allocations/{id}/delete(id=${allocation.id})}"
+                                      method="post"
+                                      onsubmit="return confirm('Remove this student from the internship?');">
+                                    <button type="submit"
+                                            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
+                                        Remove
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${#lists.isEmpty(allocations)}" class="text-center text-gray-500 py-8">
+                No allocations yet.
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
